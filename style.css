@@ -2,9 +2,14 @@
   font-family: sans-serif;
 }
 
+body {
+  margin: 0;
+}
+
 .container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -28,4 +33,15 @@
   justify-content: center;
   align-items: center;
   font-size: 72px;
+}
+
+.container h1 {
+  font-size: 48px;
+  margin-bottom: 16px;
+  margin-top: 0px;
+}
+
+.container .display-message {
+  margin-bottom: 64px;
+  font-size: 24px;
 }
