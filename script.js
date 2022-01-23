@@ -138,7 +138,7 @@ const displayController = ((doc) => {
     });
     _container.appendChild(board);
     _restartButton = doc.createElement("button");
-    _restartButton.classList.add(".restart-button");
+    _restartButton.classList.add("restart-button");
     _restartButton.textContent = "RESTART";
     _restartButton.addEventListener("click", _restartBoard);
     _container.appendChild(_restartButton);
