@@ -4,6 +4,7 @@ const displayController = ((doc) => {
 
   const winMessage = "win";
   const tieMessage = "tie";
+  let _isPlaying = true;
 
   const gameBoard = (() => {
     const board = [
@@ -79,6 +80,9 @@ const displayController = ((doc) => {
   let _currentPlayer = _players[0];
 
   const _play = function () {
+    if(!_isPlaying) {
+      return;
+    }
     if (this.textContent === "") {
       const result = gameBoard.updateBoard(
         this.dataset.row,
@@ -131,9 +135,11 @@ const displayController = ((doc) => {
       });
     });
     if (result === winMessage) {
-      _displayMessage.textContent = `${_currentPlayer.getName()} Won!`
+      _displayMessage.textContent = `${_currentPlayer.getName()} Won!`;
+      _isPlaying = false;
     } else if (result === tieMessage) {
       _displayMessage.textContent = "Tie!"
+      _isPlaying = false;
     }
   };
 
