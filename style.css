@@ -1,0 +1,23 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.board > div {
+  display: flex;
+  flex: 1;
+}
+
+.spot {
+  border: 2px solid black;
+  flex: 1;
+}
