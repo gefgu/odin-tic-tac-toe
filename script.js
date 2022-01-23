@@ -120,6 +120,7 @@ const displayController = ((doc) => {
     gameBoard.restartBoard();
     _currentPlayer = _players[0];
     _isPlaying = true;
+    _displayMessage.textContent = "";
     updateBoard();
   }
 

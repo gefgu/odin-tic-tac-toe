@@ -38,17 +38,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 72px;
+  font-size: 64px;
 }
 
 .container h1 {
   font-size: 48px;
-  margin-bottom: 16px;
-  margin-top: 0px;
+  margin: 0;
 }
 
 .container .display-message {
-  margin-bottom: 64px;
+  margin: 16px 0px;
   font-size: 24px;
 }
 
