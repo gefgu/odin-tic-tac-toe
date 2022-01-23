@@ -130,6 +130,9 @@ const displayController = ((doc) => {
 
   const _changeNameOfPlayer = function() {
     const newName = prompt("Set new name:");
+    if (newName === "") {
+      return;
+    }
     const index = +this.dataset.index;
     _players[index].changeName(newName);
     const playerElement = doc.querySelector(`#player-${index + 1}`);
