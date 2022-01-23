@@ -1,20 +1,6 @@
-// gameBoard
-// stores the board
-// check for wins or ties
-
-// displayController
-// who can play
-// where the mark can be placed
-// sends to gameboard the marks
-// display the board
-// display the messages
-// restart the game
-
-// create two players
-// add variable to hold the current player
-// after each play - change player;
 const displayController = ((doc) => {
   const _container = doc.querySelector(".container");
+  const _displayMessage = doc.querySelector(".display-message");
 
   const winMessage = "win";
   const tieMessage = "tie";
@@ -38,8 +24,6 @@ const displayController = ((doc) => {
     };
 
     const _checkWinningCondition = (mark) => {
-      // Check diagonals for equal marks
-      // If board is full - return tie
       for (let i = 0; i < 3; i++) {
         if (
           board[i][0] === board[i][1] &&
@@ -75,7 +59,7 @@ const displayController = ((doc) => {
 
     const updateBoard = (row, col, mark) => {
       board[row][col] = mark;
-      console.log(_checkWinningCondition(mark));
+      return _checkWinningCondition(mark);
     };
 
     return { getBoard, updateBoard };
@@ -94,14 +78,14 @@ const displayController = ((doc) => {
   const _players = _createPlayers();
   let _currentPlayer = _players[0];
 
-  const _addMark = function () {
+  const _play = function () {
     if (this.textContent === "") {
-      gameBoard.updateBoard(
+      const result = gameBoard.updateBoard(
         this.dataset.row,
         this.dataset.col,
         _currentPlayer.getMark()
       );
-      updateBoard();
+      updateBoard(result);
       if (_currentPlayer.getMark() === _players[0].getMark()) {
         _currentPlayer = _players[1];
       } else {
@@ -127,14 +111,14 @@ const displayController = ((doc) => {
         positionDiv.dataset.row = rowIndex;
         positionDiv.dataset.col = colIndex;
         positionDiv.classList.add("spot");
-        positionDiv.addEventListener("click", _addMark);
+        positionDiv.addEventListener("click", _play);
         div.appendChild(positionDiv);
       });
     });
     _container.appendChild(board);
   };
 
-  const updateBoard = () => {
+  const updateBoard = (result) => {
     const boardArray = gameBoard.getBoard();
     boardArray.forEach((row, rowIndex) => {
       row.forEach((value, colIndex) => {
@@ -146,10 +130,14 @@ const displayController = ((doc) => {
         }
       });
     });
+    if (result === winMessage) {
+      _displayMessage.textContent = `${_currentPlayer.getName()} Won!`
+    } else if (result === tieMessage) {
+      _displayMessage.textContent = "Tie!"
+    }
   };
 
   return { createBoard, updateBoard };
 })(document);
 
 displayController.createBoard();
-displayController.updateBoard();
