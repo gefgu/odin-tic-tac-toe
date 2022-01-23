@@ -60,8 +60,17 @@ body {
   white-space: nowrap;
 }
 
+.change-button {
+  margin-top: 32px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 .player {
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .player.active  {
