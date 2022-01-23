@@ -103,3 +103,7 @@ body {
   border-left-width: 0;
   border-right-width: 0;
 }
+
+.spot:hover {
+  background-color: rgb(240, 240, 240);
+}
