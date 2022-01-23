@@ -6,6 +6,12 @@ body {
   margin: 0;
 }
 
+.main {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .container {
   min-height: 100vh;
   display: flex;
@@ -15,8 +21,8 @@ body {
 }
 
 .board {
-  width: 500px;
-  height: 500px;
+  width: 350px;
+  height: 350px;
   display: flex;
   flex-direction: column;
 }
