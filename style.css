@@ -63,3 +63,7 @@ body {
 .player {
   text-align: center;
 }
+
+.player.active  {
+  color: red;
+}

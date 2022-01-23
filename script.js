@@ -97,7 +97,7 @@ const displayController = ((doc) => {
         this.dataset.col,
         _currentPlayer.getMark()
       );
-      updateBoard(result);
+      _updateBoard(result);
       if (_currentPlayer.getMark() === _players[0].getMark()) {
         _currentPlayer = _players[1];
       } else {
@@ -121,7 +121,8 @@ const displayController = ((doc) => {
     _currentPlayer = _players[0];
     _isPlaying = true;
     _displayMessage.textContent = "";
-    updateBoard();
+    _updateBoard();
+    _setInitialEffectToPlayer();
   };
 
   const createBoard = () => {
@@ -148,11 +149,23 @@ const displayController = ((doc) => {
     _players.forEach((player, index) => {
       const nameTitle = doc.createElement("h3");
       nameTitle.textContent = player.getName();
-      document.querySelector(`#player-${index+1}`).prepend(nameTitle);
-    })
+      document.querySelector(`#player-${index + 1}`).prepend(nameTitle);
+    });
+
+    _setInitialEffectToPlayer();
   };
 
-  const updateBoard = (result) => {
+  const _setInitialEffectToPlayer = () => {
+    document.querySelector("#player-1").classList.add("active");
+    document.querySelector("#player-2").classList.remove("active");
+  }
+
+  const _toggleEffectToPlayers = () => {
+    const playerElements = document.querySelectorAll(".player");
+    playerElements.forEach((elem) => elem.classList.toggle("active"));
+  };
+
+  const _updateBoard = (result) => {
     const boardArray = gameBoard.getBoard();
     boardArray.forEach((row, rowIndex) => {
       row.forEach((value, colIndex) => {
@@ -170,6 +183,10 @@ const displayController = ((doc) => {
     } else if (result === _tieMessage) {
       _displayMessage.textContent = "Tie!";
       _isPlaying = false;
+    }
+
+    if (_isPlaying) {
+      _toggleEffectToPlayers();
     }
   };
 
