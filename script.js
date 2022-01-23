@@ -2,8 +2,8 @@ const displayController = ((doc) => {
   const _container = doc.querySelector(".container");
   const _displayMessage = doc.querySelector(".display-message");
 
-  const winMessage = "win";
-  const tieMessage = "tie";
+  const _winMessage = "win";
+  const _tieMessage = "tie";
   let _isPlaying = true;
 
   const gameBoard = (() => {
@@ -31,13 +31,13 @@ const displayController = ((doc) => {
           board[i][1] === board[i][2] &&
           board[i][0] === mark
         ) {
-          return winMessage;
+          return _winMessage;
         } else if (
           board[0][i] === board[1][i] &&
           board[1][i] === board[2][i] &&
           board[0][i] === mark
         ) {
-          return winMessage;
+          return _winMessage;
         }
       }
       if (
@@ -45,16 +45,16 @@ const displayController = ((doc) => {
         board[1][1] === board[2][2] &&
         board[0][0] === mark
       ) {
-        return winMessage;
+        return _winMessage;
       } else if (
         board[0][2] === board[1][1] &&
         board[1][1] === board[2][0] &&
         board[1][1] === mark
       ) {
-        return winMessage;
+        return _winMessage;
       }
       if (_checkFullBoard()) {
-        return tieMessage;
+        return _tieMessage;
       }
     };
 
@@ -134,10 +134,10 @@ const displayController = ((doc) => {
         }
       });
     });
-    if (result === winMessage) {
+    if (result === _winMessage) {
       _displayMessage.textContent = `${_currentPlayer.getName()} Won!`;
       _isPlaying = false;
-    } else if (result === tieMessage) {
+    } else if (result === _tieMessage) {
       _displayMessage.textContent = "Tie!"
       _isPlaying = false;
     }
