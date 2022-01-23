@@ -180,6 +180,7 @@ const displayController = ((doc) => {
 
       const scoreTitle = doc.createElement("h4");
       scoreTitle.textContent = "Score";
+      scoreTitle.classList.add("score-title");
       playerElement.appendChild(scoreTitle);
 
       const score = doc.createElement("p");

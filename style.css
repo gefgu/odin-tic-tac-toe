@@ -76,3 +76,11 @@ body {
 .player.active > h3  {
   color: red;
 }
+
+.player .score-title {
+  margin-bottom: 0;
+}
+
+.player .score {
+  font-size: 24px;
+}
