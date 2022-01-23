@@ -69,7 +69,7 @@ const displayController = ((doc) => {
           board[rowIndex][colIndex] = "";
         });
       });
-    }
+    };
 
     return { getBoard, updateBoard, restartBoard };
   })();
@@ -88,7 +88,7 @@ const displayController = ((doc) => {
   let _currentPlayer = _players[0];
 
   const _play = function () {
-    if(!_isPlaying) {
+    if (!_isPlaying) {
       return;
     }
     if (this.textContent === "") {
@@ -122,7 +122,7 @@ const displayController = ((doc) => {
     _isPlaying = true;
     _displayMessage.textContent = "";
     updateBoard();
-  }
+  };
 
   const createBoard = () => {
     const board = doc.createElement("div");
@@ -137,14 +137,20 @@ const displayController = ((doc) => {
         div.appendChild(positionDiv);
       });
     });
+
     _container.appendChild(board);
     _restartButton = doc.createElement("button");
     _restartButton.classList.add("restart-button");
     _restartButton.textContent = "RESTART";
     _restartButton.addEventListener("click", _restartBoard);
     _container.appendChild(_restartButton);
-  };
 
+    _players.forEach((player, index) => {
+      const nameTitle = doc.createElement("h3");
+      nameTitle.textContent = player.getName();
+      document.querySelector(`#player-${index+1}`).prepend(nameTitle);
+    })
+  };
 
   const updateBoard = (result) => {
     const boardArray = gameBoard.getBoard();
@@ -162,7 +168,7 @@ const displayController = ((doc) => {
       _displayMessage.textContent = `${_currentPlayer.getName()} Won!`;
       _isPlaying = false;
     } else if (result === _tieMessage) {
-      _displayMessage.textContent = "Tie!"
+      _displayMessage.textContent = "Tie!";
       _isPlaying = false;
     }
   };
