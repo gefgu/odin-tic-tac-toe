@@ -61,6 +61,11 @@ const displayController = ((doc) => {
 // player
 // stores the name
 // stores the mark
+const Player = (name, mark) => {
+  const getName = () => name;
+  const getMark = () => mark;
+  return { getName, getMark };
+};
 
 displayController.createBoard();
 displayController.updateBoard();
