@@ -114,6 +114,15 @@ const displayController = ((doc) => {
     ];
   };
 
+  let _restartButton = null;
+
+  const _restartBoard = () => {
+    gameBoard.restartBoard();
+    _currentPlayer = _players[0];
+    _isPlaying = true;
+    updateBoard();
+  }
+
   const createBoard = () => {
     const board = doc.createElement("div");
     board.classList.add("board");
@@ -128,7 +137,13 @@ const displayController = ((doc) => {
       });
     });
     _container.appendChild(board);
+    _restartButton = doc.createElement("button");
+    _restartButton.classList.add(".restart-button");
+    _restartButton.textContent = "RESTART";
+    _restartButton.addEventListener("click", _restartBoard);
+    _container.appendChild(_restartButton);
   };
+
 
   const updateBoard = (result) => {
     const boardArray = gameBoard.getBoard();
