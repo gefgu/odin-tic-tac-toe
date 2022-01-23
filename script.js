@@ -75,9 +75,12 @@ const displayController = ((doc) => {
   })();
 
   const Player = (name, mark) => {
-    const getName = () => name;
-    const getMark = () => mark;
-    return { getName, getMark };
+    let _name = name;
+    const _mark = mark;
+    const getName = () => _name;
+    const getMark = () => _mark;
+    const changeName = (newName) => (_name = newName);
+    return { getName, getMark, changeName };
   };
 
   const _createPlayers = () => {
@@ -125,6 +128,15 @@ const displayController = ((doc) => {
     _setInitialEffectToPlayer();
   };
 
+  const _changeNameOfPlayer = function() {
+    const newName = prompt("Set new name:");
+    const index = +this.dataset.index;
+    _players[index].changeName(newName);
+    const playerElement = doc.querySelector(`#player-${index + 1}`);
+    playerElement.querySelector(".player-name").textContent =
+      _players[index].getName();
+  };
+
   const createBoard = () => {
     const board = doc.createElement("div");
     board.classList.add("board");
@@ -148,20 +160,29 @@ const displayController = ((doc) => {
 
     _players.forEach((player, index) => {
       const nameTitle = doc.createElement("h3");
+      const playerElement = doc.querySelector(`#player-${index + 1}`);
       nameTitle.textContent = player.getName();
-      document.querySelector(`#player-${index + 1}`).prepend(nameTitle);
+      nameTitle.classList.add("player-name");
+      playerElement.prepend(nameTitle);
+
+      const changeNameButton = doc.createElement("button");
+      changeNameButton.classList.add("change-button");
+      changeNameButton.textContent = "Change Name";
+      changeNameButton.dataset.index = index;
+      changeNameButton.addEventListener("click", _changeNameOfPlayer);
+      playerElement.appendChild(changeNameButton);
     });
 
     _setInitialEffectToPlayer();
   };
 
   const _setInitialEffectToPlayer = () => {
-    document.querySelector("#player-1").classList.add("active");
-    document.querySelector("#player-2").classList.remove("active");
-  }
+    doc.querySelector("#player-1").classList.add("active");
+    doc.querySelector("#player-2").classList.remove("active");
+  };
 
   const _toggleEffectToPlayers = () => {
-    const playerElements = document.querySelectorAll(".player");
+    const playerElements = doc.querySelectorAll(".player");
     playerElements.forEach((elem) => elem.classList.toggle("active"));
   };
 
