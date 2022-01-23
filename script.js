@@ -19,6 +19,7 @@ const gameBoard = (() => {
 // display the messages
 // restart the game
 const displayController = ((doc) => {
+  const _container = doc.querySelector(".container");
   const _createThreeDivs = () => {
     return [
       doc.createElement("div"),
@@ -27,20 +28,34 @@ const displayController = ((doc) => {
     ];
   };
   const createBoard = () => {
-    const container = doc.querySelector(".container");
     const board = doc.createElement("div");
-    board.classList.add("board")
+    board.classList.add("board");
     board.append(..._createThreeDivs());
     board.childNodes.forEach((div, rowIndex) => {
-        _createThreeDivs().forEach((positionDiv, colIndex) => {
-            positionDiv.dataset.position = (rowIndex * 3) + colIndex;
-            positionDiv.classList.add("spot");
-            div.appendChild(positionDiv);
-        });
+      _createThreeDivs().forEach((positionDiv, colIndex) => {
+        positionDiv.dataset.row = rowIndex;
+        positionDiv.dataset.col = colIndex;
+        positionDiv.classList.add("spot");
+        div.appendChild(positionDiv);
+      });
     });
-    container.appendChild(board);
+    _container.appendChild(board);
   };
-  return {createBoard};
+  const updateBoard = () => {
+    const boardArray = gameBoard.getBoard();
+    boardArray.forEach((row, rowIndex) => {
+      row.forEach((value, colIndex) => {
+        const spot = _container.querySelector(
+          `.spot[data-row='${rowIndex}'].spot[data-col='${colIndex}']`
+        );
+        if (spot.textContent != boardArray[rowIndex][colIndex]) {
+          spot.textContent = boardArray[rowIndex][colIndex];
+        }
+      });
+    });
+  };
+
+  return { createBoard, updateBoard };
 })(document);
 
 // player
@@ -48,3 +63,4 @@ const displayController = ((doc) => {
 // stores the mark
 
 displayController.createBoard();
+displayController.updateBoard();
