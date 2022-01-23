@@ -1,19 +1,6 @@
 // gameBoard
 // stores the board
 // check for wins or ties
-const gameBoard = (() => {
-  const board = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ];
-  const getBoard = () => board;
-  const changeBoard = (row, col, value) => {
-    board[row][col] = value;
-  };
-
-  return { getBoard, changeBoard };
-})();
 
 // displayController
 // who can play
@@ -29,6 +16,71 @@ const gameBoard = (() => {
 const displayController = ((doc) => {
   const _container = doc.querySelector(".container");
 
+  const winMessage = "win";
+  const tieMessage = "tie";
+
+  const gameBoard = (() => {
+    const board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ];
+    const getBoard = () => board;
+
+    const _checkFullBoard = () => {
+      const isFull = board.reduce(
+        (accumulator, row) =>
+          accumulator *
+          row.reduce((previous, current) => previous * (current !== ""), 1),
+        1
+      );
+      return isFull;
+    };
+
+    const _checkWinningCondition = (mark) => {
+      // Check diagonals for equal marks
+      // If board is full - return tie
+      for (let i = 0; i < 3; i++) {
+        if (
+          board[i][0] === board[i][1] &&
+          board[i][1] === board[i][2] &&
+          board[i][0] === mark
+        ) {
+          return winMessage;
+        } else if (
+          board[0][i] === board[1][i] &&
+          board[1][i] === board[2][i] &&
+          board[0][i] === mark
+        ) {
+          return winMessage;
+        }
+      }
+      if (
+        board[0][0] === board[1][1] &&
+        board[1][1] === board[2][2] &&
+        board[0][0] === mark
+      ) {
+        return winMessage;
+      } else if (
+        board[0][2] === board[1][1] &&
+        board[1][1] === board[2][0] &&
+        board[1][1] === mark
+      ) {
+        return winMessage;
+      }
+      if (_checkFullBoard()) {
+        return tieMessage;
+      }
+    };
+
+    const updateBoard = (row, col, mark) => {
+      board[row][col] = mark;
+      console.log(_checkWinningCondition(mark));
+    };
+
+    return { getBoard, updateBoard };
+  })();
+
   const Player = (name, mark) => {
     const getName = () => name;
     const getMark = () => mark;
@@ -42,18 +94,18 @@ const displayController = ((doc) => {
   const _players = _createPlayers();
   let _currentPlayer = _players[0];
 
-  const _addMark = function() {
+  const _addMark = function () {
     if (this.textContent === "") {
-      gameBoard.changeBoard(
+      gameBoard.updateBoard(
         this.dataset.row,
         this.dataset.col,
         _currentPlayer.getMark()
       );
       updateBoard();
-      if(_currentPlayer.getMark() === _players[0].getMark()) {
-          _currentPlayer = _players[1];
+      if (_currentPlayer.getMark() === _players[0].getMark()) {
+        _currentPlayer = _players[1];
       } else {
-          _currentPlayer = _players[0];
+        _currentPlayer = _players[0];
       }
     }
   };
