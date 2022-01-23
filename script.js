@@ -63,7 +63,15 @@ const displayController = ((doc) => {
       return _checkWinningCondition(mark);
     };
 
-    return { getBoard, updateBoard };
+    const restartBoard = () => {
+      board.forEach((row, rowIndex) => {
+        row.forEach((_, colIndex) => {
+          board[rowIndex][colIndex] = "";
+        });
+      });
+    }
+
+    return { getBoard, updateBoard, restartBoard };
   })();
 
   const Player = (name, mark) => {
@@ -143,7 +151,7 @@ const displayController = ((doc) => {
     }
   };
 
-  return { createBoard, updateBoard };
+  return { createBoard };
 })(document);
 
 displayController.createBoard();
