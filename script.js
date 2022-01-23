@@ -77,10 +77,13 @@ const displayController = ((doc) => {
   const Player = (name, mark) => {
     let _name = name;
     const _mark = mark;
+    let _score = 0;
     const getName = () => _name;
     const getMark = () => _mark;
+    const getScore = () => _score;
     const changeName = (newName) => (_name = newName);
-    return { getName, getMark, changeName };
+    const incrementScore = () => _score++;
+    return { getName, getMark, getScore, changeName, incrementScore };
   };
 
   const _createPlayers = () => {
@@ -128,7 +131,7 @@ const displayController = ((doc) => {
     _setInitialEffectToPlayer();
   };
 
-  const _changeNameOfPlayer = function() {
+  const _changeNameOfPlayer = function () {
     const newName = prompt("Set new name:");
     if (newName === "") {
       return;
@@ -174,6 +177,15 @@ const displayController = ((doc) => {
       changeNameButton.dataset.index = index;
       changeNameButton.addEventListener("click", _changeNameOfPlayer);
       playerElement.appendChild(changeNameButton);
+
+      const scoreTitle = doc.createElement("h4");
+      scoreTitle.textContent = "Score";
+      playerElement.appendChild(scoreTitle);
+
+      const score = doc.createElement("p");
+      score.textContent = "0";
+      score.classList.add("score");
+      playerElement.appendChild(score);
     });
 
     _setInitialEffectToPlayer();
@@ -204,6 +216,7 @@ const displayController = ((doc) => {
     if (result === _winMessage) {
       _displayMessage.textContent = `${_currentPlayer.getName()} Won!`;
       _isPlaying = false;
+      _updateScore();
     } else if (result === _tieMessage) {
       _displayMessage.textContent = "Tie!";
       _isPlaying = false;
@@ -212,6 +225,17 @@ const displayController = ((doc) => {
     if (_isPlaying) {
       _toggleEffectToPlayers();
     }
+  };
+
+  const _updateScore = () => {
+    _currentPlayer.incrementScore();
+    let scoreElement = null;
+    if (_currentPlayer === _players[0]) {
+      scoreElement = doc.querySelector("#player-1 .score")
+    } else {
+      scoreElement = doc.querySelector("#player-2 .score")
+    }
+    scoreElement.textContent = _currentPlayer.getScore();
   };
 
   return { createBoard };

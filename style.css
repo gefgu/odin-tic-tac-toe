@@ -73,6 +73,6 @@ body {
   flex-direction: column;
 }
 
-.player.active  {
+.player.active > h3  {
   color: red;
 }
