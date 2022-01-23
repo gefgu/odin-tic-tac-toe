@@ -1,3 +1,7 @@
+* {
+  font-family: sans-serif;
+}
+
 .container {
   min-height: 100vh;
   display: flex;
@@ -20,4 +24,8 @@
 .spot {
   border: 2px solid black;
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 72px;
 }
