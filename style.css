@@ -84,3 +84,22 @@ body {
 .player .score {
   font-size: 24px;
 }
+
+.spot[data-row='0'].spot[data-col='0'],
+.spot[data-row='0'].spot[data-col='2'],
+.spot[data-row='2'].spot[data-col='0'],
+.spot[data-row='2'].spot[data-col='2'] {
+  border-width: 0;
+}
+
+.spot[data-row='0'].spot[data-col='1'],
+.spot[data-row='2'].spot[data-col='1'] {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.spot[data-row='1'].spot[data-col='0'],
+.spot[data-row='1'].spot[data-col='2'] {
+  border-left-width: 0;
+  border-right-width: 0;
+}
