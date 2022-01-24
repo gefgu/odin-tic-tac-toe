@@ -78,12 +78,25 @@ const displayController = ((doc) => {
     let _name = name;
     const _mark = mark;
     let _score = 0;
+    let _isBot = false;
     const getName = () => _name;
     const getMark = () => _mark;
     const getScore = () => _score;
+    const isBot = () => _isBot;
     const changeName = (newName) => (_name = newName);
+    const changeToBot = () => (_isBot = true);
+    const changeToHuman = () => (_isBot = false);
     const incrementScore = () => _score++;
-    return { getName, getMark, getScore, changeName, incrementScore };
+    return {
+      getName,
+      getMark,
+      getScore,
+      isBot,
+      changeName,
+      incrementScore,
+      changeToBot,
+      changeToHuman,
+    };
   };
 
   const _createPlayers = () => {
@@ -131,17 +144,32 @@ const displayController = ((doc) => {
     _setInitialEffectToPlayer();
   };
 
+  const _setPlayerName = (playerIndex, newName) => {
+    _players[playerIndex].changeName(newName);
+    const playerElement = doc.querySelector(`#player-${playerIndex + 1}`);
+    playerElement.querySelector(".player-name").textContent =
+      _players[playerIndex].getName();
+  }
+
   const _changeNameOfPlayer = function () {
     const newName = prompt("Set new name:");
     if (newName === "") {
       return;
     }
     const index = +this.dataset.index;
-    _players[index].changeName(newName);
-    const playerElement = doc.querySelector(`#player-${index + 1}`);
-    playerElement.querySelector(".player-name").textContent =
-      _players[index].getName();
+    _setPlayerName(index, newName);
   };
+
+  const _changePlayerToBot = function() {
+    const index = +this.dataset.index;
+    if(_players[index].isBot()) {
+      _players[index].changeToHuman();
+      _setPlayerName(index, `Human ${index+1}`);
+    } else {
+      _players[index].changeToBot();
+      _setPlayerName(index, `Bot ${index+1}`);
+    }
+  }
 
   const createBoard = () => {
     const board = doc.createElement("div");
@@ -177,6 +205,13 @@ const displayController = ((doc) => {
       changeNameButton.dataset.index = index;
       changeNameButton.addEventListener("click", _changeNameOfPlayer);
       playerElement.appendChild(changeNameButton);
+      
+      const changeToBotButton = doc.createElement("button");
+      changeToBotButton.classList.add("bot-button");
+      changeToBotButton.textContent = "Toggle Bot";
+      changeToBotButton.dataset.index = index;
+      changeToBotButton.addEventListener("click", _changePlayerToBot);
+      playerElement.appendChild(changeToBotButton);
 
       const scoreTitle = doc.createElement("h4");
       scoreTitle.textContent = "Score";
@@ -232,9 +267,9 @@ const displayController = ((doc) => {
     _currentPlayer.incrementScore();
     let scoreElement = null;
     if (_currentPlayer === _players[0]) {
-      scoreElement = doc.querySelector("#player-1 .score")
+      scoreElement = doc.querySelector("#player-1 .score");
     } else {
-      scoreElement = doc.querySelector("#player-2 .score")
+      scoreElement = doc.querySelector("#player-2 .score");
     }
     scoreElement.textContent = _currentPlayer.getScore();
   };
