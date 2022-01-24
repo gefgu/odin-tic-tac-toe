@@ -71,7 +71,19 @@ const displayController = ((doc) => {
       });
     };
 
-    return { getBoard, updateBoard, restartBoard };
+    const locateEmptyPositions = () => {
+      const locations = [];
+      board.forEach((row, rowIndex) =>
+        row.forEach((value, colIndex) => {
+          if (value === "") {
+            locations.push({rowIndex, colIndex});
+          }
+        })
+      );
+      return locations;
+    };
+
+    return { getBoard, updateBoard, restartBoard, locateEmptyPositions };
   })();
 
   const Player = (name, mark) => {
@@ -87,6 +99,12 @@ const displayController = ((doc) => {
     const changeToBot = () => (_isBot = true);
     const changeToHuman = () => (_isBot = false);
     const incrementScore = () => _score++;
+    const play = () => {
+      const emptyPositions = gameBoard.locateEmptyPositions();
+      const randomPosition =
+        emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+      _clickSpot(randomPosition.rowIndex, randomPosition.colIndex);
+    };
     return {
       getName,
       getMark,
@@ -96,6 +114,7 @@ const displayController = ((doc) => {
       incrementScore,
       changeToBot,
       changeToHuman,
+      play,
     };
   };
 
@@ -123,6 +142,17 @@ const displayController = ((doc) => {
         _currentPlayer = _players[0];
       }
     }
+    if (_currentPlayer.isBot() && _isPlaying) {
+      _currentPlayer.play();
+    }
+  };
+
+  const _clickSpot = (rowIndex, colIndex) => {
+    _container
+      .querySelector(
+        `.spot[data-row='${rowIndex}'].spot[data-col='${colIndex}']`
+      )
+      .click();
   };
 
   const _createThreeDivs = () => {
@@ -149,7 +179,7 @@ const displayController = ((doc) => {
     const playerElement = doc.querySelector(`#player-${playerIndex + 1}`);
     playerElement.querySelector(".player-name").textContent =
       _players[playerIndex].getName();
-  }
+  };
 
   const _changeNameOfPlayer = function () {
     const newName = prompt("Set new name:");
@@ -160,16 +190,19 @@ const displayController = ((doc) => {
     _setPlayerName(index, newName);
   };
 
-  const _changePlayerToBot = function() {
+  const _changePlayerToBot = function () {
     const index = +this.dataset.index;
-    if(_players[index].isBot()) {
+    if (_players[index].isBot()) {
       _players[index].changeToHuman();
-      _setPlayerName(index, `Human ${index+1}`);
+      _setPlayerName(index, `Human ${index + 1}`);
     } else {
       _players[index].changeToBot();
-      _setPlayerName(index, `Bot ${index+1}`);
+      _setPlayerName(index, `Bot ${index + 1}`);
+      if(_players[index] === _currentPlayer) {
+        _currentPlayer.play();
+      }
     }
-  }
+  };
 
   const createBoard = () => {
     const board = doc.createElement("div");
@@ -205,7 +238,7 @@ const displayController = ((doc) => {
       changeNameButton.dataset.index = index;
       changeNameButton.addEventListener("click", _changeNameOfPlayer);
       playerElement.appendChild(changeNameButton);
-      
+
       const changeToBotButton = doc.createElement("button");
       changeToBotButton.classList.add("bot-button");
       changeToBotButton.textContent = "Toggle Bot";
