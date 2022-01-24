@@ -172,6 +172,9 @@ const displayController = ((doc) => {
     _displayMessage.textContent = "";
     _updateBoard();
     _setInitialEffectToPlayer();
+    if(_currentPlayer.isBot()) {
+      _currentPlayer.play()
+    }
   };
 
   const _setPlayerName = (playerIndex, newName) => {
