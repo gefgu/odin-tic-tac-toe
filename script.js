@@ -66,6 +66,7 @@ const displayController = ((doc) => {
 
     const updateBoard = (row, col, mark) => {
       board[row][col] = mark;
+      _lastPlay = mark;
       return _checkForWinOfMark(mark);
     };
 
