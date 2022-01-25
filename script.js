@@ -78,9 +78,9 @@ const displayController = ((doc) => {
       _lastPlay = "O";
     };
 
-    const locateEmptySpots = () => {
+    const _locateEmptySpotsOfBoard = (boardToCheck) => {
       const locations = [];
-      board.forEach((row, rowIndex) =>
+      boardToCheck.forEach((row, rowIndex) =>
         row.forEach((value, colIndex) => {
           if (value === "") {
             locations.push({ rowIndex, colIndex });
@@ -90,7 +90,103 @@ const displayController = ((doc) => {
       return locations;
     };
 
-    return { getBoard, updateBoard, restartBoard, locateEmptySpots };
+    const locateEmptySpots = () => {
+      return _locateEmptySpotsOfBoard(getBoard());
+    };
+
+    const getBestMove = () => {
+      const maxPlayerMark = _lastPlay === "X" ? "O" : "X";
+      const minPlayerMark = _lastPlay;
+      const startingDepth = locateEmptySpots().length;
+      if (startingDepth === 9) {
+        return {rowIndex: 1, colIndex: 1};
+      }
+      let bestPositionIndex = null;
+      let foundBestPosition = false;
+
+      const evaluateBoard = (board) => {
+        const resultOfMax = _getResultOfBoard(board, maxPlayerMark);
+        if (resultOfMax === _winMessage) {
+          return 1;
+        } else if (resultOfMax === _tieMessage) {
+          return 0;
+        } else {
+          const resultOfMin = _getResultOfBoard(board, minPlayerMark);
+          if (resultOfMin === _winMessage) {
+            return -1;
+          }
+        }
+        return null;
+      };
+
+      const minimax = function (
+        position,
+        depth,
+        alpha,
+        beta,
+        maximizingPlayer
+      ) {
+        const evalPosition = evaluateBoard(position);
+        if (depth === 0 || evalPosition !== null) {
+          return evalPosition;
+        }
+
+        if (maximizingPlayer) {
+          let maxEval = -Infinity;
+          const emptySpots = _locateEmptySpotsOfBoard(position);
+          emptySpots.forEach((emptySpot, index) => {
+            if (beta <= alpha) {
+              return -Infinity;
+            }
+            const child = JSON.parse(JSON.stringify(position));
+            child[emptySpot.rowIndex][emptySpot.colIndex] = maxPlayerMark;
+            const eval = minimax(child, depth - 1, alpha, beta, false);
+            maxEval = Math.max(maxEval, eval);
+            alpha = Math.max(alpha, eval);
+            if (depth === startingDepth && maxEval > -1 && !foundBestPosition) {
+              if (maxEval == 0) {
+                bestPositionIndex = index;
+              } else if (maxEval == 1) {
+                foundBestPosition = true;
+                bestPositionIndex = index;
+              }
+            }
+          });
+          if (depth === startingDepth) {
+            if (bestPositionIndex !== null) {
+              return emptySpots[bestPositionIndex];
+            } else {
+              return emptySpots[Math.floor(Math.random() * emptySpots.length)];
+            }
+          } else {
+            return maxEval;
+          }
+        } else {
+          let minEval = +Infinity;
+          _locateEmptySpotsOfBoard(position).forEach((emptySpot) => {
+            if (beta <= alpha) {
+              return +Infinity;
+            }
+            const child = JSON.parse(JSON.stringify(position));
+            child[emptySpot.rowIndex][emptySpot.colIndex] = minPlayerMark;
+            const eval = minimax(child, depth - 1, alpha, beta, true);
+            minEval = Math.min(minEval, eval);
+            beta = Math.min(beta, eval);
+          });
+          return minEval;
+        }
+      };
+
+      return minimax(getBoard(), startingDepth, -Infinity, +Infinity, true);
+    };
+
+    return {
+      getBoard,
+      updateBoard,
+      restartBoard,
+      locateEmptySpots,
+      getBestMove,
+    };
   })();
 
   const Player = (name, mark) => {
@@ -107,10 +203,8 @@ const displayController = ((doc) => {
     const changeToHuman = () => (_isBot = false);
     const incrementScore = () => _score++;
     const play = () => {
-      const emptyPositions = gameBoard.locateEmptySpots();
-      const randomPosition =
-        emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
-      _clickSpot(randomPosition.rowIndex, randomPosition.colIndex);
+      const bestMove = gameBoard.getBestMove();
+      _clickSpot(bestMove.rowIndex, bestMove.colIndex);
     };
     return {
       getName,
