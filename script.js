@@ -16,8 +16,8 @@ const displayController = ((doc) => {
 
     const getBoard = () => board;
 
-    const _checkFullBoard = () => {
-      const isFull = board.reduce(
+    const _checkFullBoard = (boardToCheck) => {
+      const isFull = boardToCheck.reduce(
         (accumulator, row) =>
           accumulator *
           row.reduce((previous, current) => previous * (current !== ""), 1),
@@ -26,36 +26,36 @@ const displayController = ((doc) => {
       return isFull;
     };
 
-    const _getResultOfBoard = (boardChecked, mark) => {
+    const _getResultOfBoard = (boardToCheck, mark) => {
       for (let i = 0; i < 3; i++) {
         if (
-          boardChecked[i][0] === boardChecked[i][1] &&
-          boardChecked[i][1] === boardChecked[i][2] &&
-          boardChecked[i][0] === mark
+          boardToCheck[i][0] === boardToCheck[i][1] &&
+          boardToCheck[i][1] === boardToCheck[i][2] &&
+          boardToCheck[i][0] === mark
         ) {
           return _winMessage;
         } else if (
-          boardChecked[0][i] === boardChecked[1][i] &&
-          boardChecked[1][i] === boardChecked[2][i] &&
-          boardChecked[0][i] === mark
+          boardToCheck[0][i] === boardToCheck[1][i] &&
+          boardToCheck[1][i] === boardToCheck[2][i] &&
+          boardToCheck[0][i] === mark
         ) {
           return _winMessage;
         }
       }
       if (
-        boardChecked[0][0] === boardChecked[1][1] &&
-        boardChecked[1][1] === boardChecked[2][2] &&
-        boardChecked[0][0] === mark
+        boardToCheck[0][0] === boardToCheck[1][1] &&
+        boardToCheck[1][1] === boardToCheck[2][2] &&
+        boardToCheck[0][0] === mark
       ) {
         return _winMessage;
       } else if (
-        boardChecked[0][2] === boardChecked[1][1] &&
-        boardChecked[1][1] === boardChecked[2][0] &&
-        boardChecked[1][1] === mark
+        boardToCheck[0][2] === boardToCheck[1][1] &&
+        boardToCheck[1][1] === boardToCheck[2][0] &&
+        boardToCheck[1][1] === mark
       ) {
         return _winMessage;
       }
-      if (_checkFullBoard()) {
+      if (_checkFullBoard(boardToCheck)) {
         return _tieMessage;
       }
     };
@@ -100,19 +100,19 @@ const displayController = ((doc) => {
       const minPlayerMark = _lastPlay;
       const startingDepth = locateEmptySpots().length;
       if (startingDepth === 9) {
-        return {rowIndex: 1, colIndex: 1};
+        return { rowIndex: 1, colIndex: 1 };
       }
       let bestPositionIndex = null;
       let foundBestPosition = false;
 
-      const evaluateBoard = (board) => {
-        const resultOfMax = _getResultOfBoard(board, maxPlayerMark);
+      const evaluateBoard = (boardToCheck) => {
+        const resultOfMax = _getResultOfBoard(boardToCheck, maxPlayerMark);
         if (resultOfMax === _winMessage) {
           return 1;
         } else if (resultOfMax === _tieMessage) {
           return 0;
         } else {
-          const resultOfMin = _getResultOfBoard(board, minPlayerMark);
+          const resultOfMin = _getResultOfBoard(boardToCheck, minPlayerMark);
           if (resultOfMin === _winMessage) {
             return -1;
           }
