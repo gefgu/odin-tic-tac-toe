@@ -12,6 +12,8 @@ const displayController = ((doc) => {
       ["", "", ""],
       ["", "", ""],
     ];
+    let _lastPlay = "O";
+
     const getBoard = () => board;
 
     const _checkFullBoard = () => {
@@ -24,32 +26,32 @@ const displayController = ((doc) => {
       return isFull;
     };
 
-    const _checkWinningCondition = (mark) => {
+    const _getResultOfBoard = (boardChecked, mark) => {
       for (let i = 0; i < 3; i++) {
         if (
-          board[i][0] === board[i][1] &&
-          board[i][1] === board[i][2] &&
-          board[i][0] === mark
+          boardChecked[i][0] === boardChecked[i][1] &&
+          boardChecked[i][1] === boardChecked[i][2] &&
+          boardChecked[i][0] === mark
         ) {
           return _winMessage;
         } else if (
-          board[0][i] === board[1][i] &&
-          board[1][i] === board[2][i] &&
-          board[0][i] === mark
+          boardChecked[0][i] === boardChecked[1][i] &&
+          boardChecked[1][i] === boardChecked[2][i] &&
+          boardChecked[0][i] === mark
         ) {
           return _winMessage;
         }
       }
       if (
-        board[0][0] === board[1][1] &&
-        board[1][1] === board[2][2] &&
-        board[0][0] === mark
+        boardChecked[0][0] === boardChecked[1][1] &&
+        boardChecked[1][1] === boardChecked[2][2] &&
+        boardChecked[0][0] === mark
       ) {
         return _winMessage;
       } else if (
-        board[0][2] === board[1][1] &&
-        board[1][1] === board[2][0] &&
-        board[1][1] === mark
+        boardChecked[0][2] === boardChecked[1][1] &&
+        boardChecked[1][1] === boardChecked[2][0] &&
+        boardChecked[1][1] === mark
       ) {
         return _winMessage;
       }
@@ -58,9 +60,13 @@ const displayController = ((doc) => {
       }
     };
 
+    const _checkForWinOfMark = (mark) => {
+      return _getResultOfBoard(getBoard(), mark);
+    };
+
     const updateBoard = (row, col, mark) => {
       board[row][col] = mark;
-      return _checkWinningCondition(mark);
+      return _checkForWinOfMark(mark);
     };
 
     const restartBoard = () => {
@@ -69,21 +75,22 @@ const displayController = ((doc) => {
           board[rowIndex][colIndex] = "";
         });
       });
+      _lastPlay = "O";
     };
 
-    const locateEmptyPositions = () => {
+    const locateEmptySpots = () => {
       const locations = [];
       board.forEach((row, rowIndex) =>
         row.forEach((value, colIndex) => {
           if (value === "") {
-            locations.push({rowIndex, colIndex});
+            locations.push({ rowIndex, colIndex });
           }
         })
       );
       return locations;
     };
 
-    return { getBoard, updateBoard, restartBoard, locateEmptyPositions };
+    return { getBoard, updateBoard, restartBoard, locateEmptySpots };
   })();
 
   const Player = (name, mark) => {
@@ -100,7 +107,7 @@ const displayController = ((doc) => {
     const changeToHuman = () => (_isBot = false);
     const incrementScore = () => _score++;
     const play = () => {
-      const emptyPositions = gameBoard.locateEmptyPositions();
+      const emptyPositions = gameBoard.locateEmptySpots();
       const randomPosition =
         emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
       _clickSpot(randomPosition.rowIndex, randomPosition.colIndex);
@@ -172,8 +179,8 @@ const displayController = ((doc) => {
     _displayMessage.textContent = "";
     _updateBoard();
     _setInitialEffectToPlayer();
-    if(_currentPlayer.isBot()) {
-      _currentPlayer.play()
+    if (_currentPlayer.isBot()) {
+      _currentPlayer.play();
     }
   };
 
@@ -201,7 +208,7 @@ const displayController = ((doc) => {
     } else {
       _players[index].changeToBot();
       _setPlayerName(index, `Bot ${index + 1}`);
-      if(_players[index] === _currentPlayer) {
+      if (_players[index] === _currentPlayer) {
         _currentPlayer.play();
       }
     }
